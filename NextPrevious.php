@@ -123,12 +123,6 @@ class NextPrevious extends Widget
         if (! empty($records)) {
             return $records->id;
         }
-        /*
-         * foreach ($records as $i => $r)
-         * if ($r->id == $currentId)
-         * return isset($records[$i + 1]->id) ? $records[$i + 1]->id : NULL;
-         */
-
         return NULL;
     }
 }
