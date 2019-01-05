@@ -6,4 +6,4 @@ Custom Pagination to navigate model result with next and previous link
 
 app\modules\blog\widgets\NextPrevious::widget(['model' => $model])
 
-You Can change your namespace accordingly
+```
