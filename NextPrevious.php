@@ -73,7 +73,7 @@ class NextPrevious extends Widget
             'class' => 'icon prev'
         ]) . Html::tag('div', Html::tag('strong', $this->prevLabel, [
             'class' => 'text-primary'
-        ]) . Html::tag('h6', 'I Bought a Wedding Dress'), [
+        ]) . Html::tag('h6', 'Prev Blog'), [
             'class' => 'text'
         ]);
     }
@@ -82,7 +82,7 @@ class NextPrevious extends Widget
     {
         return Html::tag('div', Html::tag('strong', $this->nextLabel, [
             'class' => 'text-primary'
-        ]) . Html::tag('h6', 'I Bought a Wedding Dress'), [
+        ]) . Html::tag('h6', 'Next Blog'), [
             'class' => 'text'
         ]) . Html::tag('div', Html::tag('i', '', [
             'class' => $this->nextIcon
