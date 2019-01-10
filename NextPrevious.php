@@ -1,8 +1,4 @@
 <?php
-/**
- *@copyright : QTeqLab
- *@author	 : Vishal Sinha < vishalsinhadev@gmail.com >
- */
 namespace app\modules\blog\widgets;
 
 use yii\base\Widget;
@@ -30,6 +26,14 @@ class NextPrevious extends Widget
 
     public $nextUrl;
 
+    public $prevTitle;
+
+    public $nextTitle;
+
+    public $nresult;
+
+    public $presult;
+
     public $url = 'guest-view';
 
     const PREV = 0;
@@ -38,29 +42,35 @@ class NextPrevious extends Widget
 
     public function init()
     {
-        $id = $this->getNextOrPrevId($this->model->id, 'prev');
-        if ($id != null)
-            $this->prevUrl = Url::toRoute([
-                $this->url,
-                'id' => $id
-            ]);
-        $nid = $this->getNextOrPrevId($this->model->id, 'next');
-        if ($nid != null)
-            $this->nextUrl = Url::toRoute([
-                $this->url,
-                'id' => $nid
-            ]);
+        $this->presult = $this->getNextOrPrevId($this->model->id, self::PREV);
+        if ($this->presult != null) {
+            $this->prevUrl = $this->presult->getUrl($this->url);
+            $this->prevTitle = $this->presult->title;
+        }
+        $this->nresult = $this->getNextOrPrevId($this->model->id, self::NEXT);
+        if ($this->nresult != null) {
+            $this->nextUrl = $this->nresult->getUrl($this->url);
+            $this->nextTitle = $this->nresult->title;
+        }
 
         parent::init();
     }
 
     public function run()
     {
-        echo Html::tag('div', Html::a($this->getPrev(), $this->prevUrl, [
-            'class' => $this->prevLinkClass
-        ]) . Html::a($this->getNext(), $this->nextUrl, [
-            'class' => $this->nextLinkClass
-        ]), [
+        $link = '';
+        if ($this->presult != null) {
+            $link .= Html::a($this->getPrev(), $this->prevUrl, [
+                'class' => $this->prevLinkClass
+            ]);
+        }
+        if ($this->nresult != null) {
+            $link .= Html::a($this->getNext(), $this->nextUrl, [
+                'class' => $this->nextLinkClass
+            ]);
+        }
+
+        echo Html::tag('div', $link, [
             'class' => 'posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row'
         ]);
     }
@@ -73,7 +83,7 @@ class NextPrevious extends Widget
             'class' => 'icon prev'
         ]) . Html::tag('div', Html::tag('strong', $this->prevLabel, [
             'class' => 'text-primary'
-        ]) . Html::tag('h6', 'Prev Blog'), [
+        ]) . Html::tag('h6', $this->prevTitle), [
             'class' => 'text'
         ]);
     }
@@ -82,7 +92,7 @@ class NextPrevious extends Widget
     {
         return Html::tag('div', Html::tag('strong', $this->nextLabel, [
             'class' => 'text-primary'
-        ]) . Html::tag('h6', 'Next Blog'), [
+        ]) . Html::tag('h6', $this->nextTitle), [
             'class' => 'text'
         ]) . Html::tag('div', Html::tag('i', '', [
             'class' => $this->nextIcon
@@ -94,7 +104,7 @@ class NextPrevious extends Widget
     function getNextOrPrevId($currentId, $nextOrPrev)
     {
         $records = NULL;
-        if ($nextOrPrev == "prev") {
+        if ($nextOrPrev == self::PREV) {
             $where = [
                 '<',
                 'id',
@@ -104,7 +114,7 @@ class NextPrevious extends Widget
                 'id' => SORT_DESC
             ];
         }
-        if ($nextOrPrev == "next") {
+        if ($nextOrPrev == self::NEXT) {
             $where = [
                 '>',
                 'id',
@@ -115,14 +125,21 @@ class NextPrevious extends Widget
             ];
         }
         $records = get_class($this->model)::find()->select([
-            'id'
+            'id',
+            'title'
         ])
             ->where($where)
             ->orderBy($order)
             ->one();
         if (! empty($records)) {
-            return $records->id;
+            return $records;
         }
+        /*
+         * foreach ($records as $i => $r)
+         * if ($r->id == $currentId)
+         * return isset($records[$i + 1]->id) ? $records[$i + 1]->id : NULL;
+         */
+
         return NULL;
     }
 }
