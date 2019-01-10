@@ -42,12 +42,12 @@ class NextPrevious extends Widget
 
     public function init()
     {
-        $this->presult = $this->getNextOrPrevId($this->model->id, self::PREV);
+        $this->presult = $this->getNextOrPrevId(self::PREV);
         if ($this->presult != null) {
             $this->prevUrl = $this->presult->getUrl($this->url);
             $this->prevTitle = $this->presult->title;
         }
-        $this->nresult = $this->getNextOrPrevId($this->model->id, self::NEXT);
+        $this->nresult = $this->getNextOrPrevId(self::NEXT);
         if ($this->nresult != null) {
             $this->nextUrl = $this->nresult->getUrl($this->url);
             $this->nextTitle = $this->nresult->title;
@@ -101,7 +101,7 @@ class NextPrevious extends Widget
         ]);
     }
 
-    function getNextOrPrevId($currentId, $nextOrPrev)
+    function getNextOrPrevId($nextOrPrev)
     {
         $records = NULL;
         if ($nextOrPrev == self::PREV) {
